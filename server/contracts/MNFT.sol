@@ -73,6 +73,10 @@ contract MNFT is ERC721 {
         return balanceOf(_account);
     }
 
+    function getNftOwner(uint256 nft) external returns(address) {
+        return ownerOf(nft);
+    }
+
     function withdraw() external payable {
         require(withdrawAllowance[msg.sender] > 0, "Insufficient balance");
         uint256 balance = withdrawAllowance[msg.sender];
@@ -82,8 +86,6 @@ contract MNFT is ERC721 {
     }
 
     function createOrder(uint256 _nft, uint256 _price) external returns (uint256) {
-        require(ownerOf(_nft) == msg.sender, "Not owner");
-
         uint256 orderId = uint256(keccak256(abi.encodePacked(msg.sender, _nft, _price)));
         Order memory order = Order({
             id: orderId,

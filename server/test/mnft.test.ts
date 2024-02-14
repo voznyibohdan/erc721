@@ -2,6 +2,7 @@ import {ethers} from "hardhat";
 import {HardhatEthersSigner} from "@nomicfoundation/hardhat-ethers/signers";
 import {MNFT} from "../typechain-types";
 import {expect} from "chai";
+import abi from '../abi/MNFT.json';
 
 describe('MNFT', () => {
     async function deploy() {
@@ -10,8 +11,27 @@ describe('MNFT', () => {
         const Contract = await ethers.getContractFactory('MNFT');
         const contract: MNFT = await Contract.deploy();
 
-        return {contract, owner, user1,user2}
+        const provider = new ethers.JsonRpcProvider();
+        const deployedContract = new ethers.Contract('0xBf7877CCB45f6d792c581fcbDd1150caD486B284', abi.abi, provider)
+
+        return {deployedContract, contract, owner, user1,user2}
     }
+
+    describe('getUserNftsAmount DEPLOYED', () => {
+        it('should return user nft amount', async () => {
+            const {deployedContract} = await deploy();
+            const response = await deployedContract.getUserNftsAmount('0x580828B108f9B42D13eB5d7A1E70bBd9076C632d');
+            console.log('deployedContract: ', response)
+        });
+    })
+
+    describe('getUserNftsAmount DEPLOYED', () => {
+        it('should return user nft amount', async () => {
+            const {contract} = await deploy();
+            const response = await contract.getUserNftsAmount('0x580828B108f9B42D13eB5d7A1E70bBd9076C632d');
+            console.log('deployedContract: ', response)
+        });
+    })
 
     describe('mint', () => {
         it('Should increase totalSupply', async () => {
