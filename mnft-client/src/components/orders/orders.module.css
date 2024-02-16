@@ -2,9 +2,12 @@
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(3, 1fr);
+
 }
 
 .card {
     border: 1px solid #9e9ea4;
     border-radius: 4px;
+    padding: 15px;
+
 }

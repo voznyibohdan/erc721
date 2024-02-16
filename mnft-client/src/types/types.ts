@@ -8,6 +8,16 @@ export type Order = {
     owner: address;
 }
 
+export type Proposal = {
+    id: string
+    orderId: string
+    nft: string
+    price: string
+    isClosed: boolean
+    author: address
+    orderOwner: address
+}
+
 export type NFT = {
     amount :string;
     block_number: string;

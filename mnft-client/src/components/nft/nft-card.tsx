@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {useState} from "react";
+import {ChangeEvent, useState} from "react";
 import {createOrder} from "@/services/contract";
 import {parseEther} from "viem";
 
@@ -22,12 +22,13 @@ type NftCard = {
 export function NftCard({ id, name }: NftCard) {
     const [price, setPrice] = useState(0.1);
 
-    const handleInputChange = (event: any) => {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setPrice(parseFloat(event.target.value));
     }
 
     const handleCreateOrder = async () => {
-        await createOrder(parseInt(id), 1);
+        console.log('NFT PRICE: ', price.toString());
+        await createOrder(parseInt(id), parseEther(price.toString()));
     }
 
     return (
