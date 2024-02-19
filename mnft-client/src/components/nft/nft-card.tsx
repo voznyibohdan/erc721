@@ -63,6 +63,7 @@ export function NftCard({ nft }: NftCard) {
             <CardHeader>
                 <CardTitle>Name</CardTitle>
                 <CardDescription>{nft.name}</CardDescription>
+                <img src={metadata?.token_uri} alt=""/>
             </CardHeader>
             <CardContent>
                 <p>nft id: {metadata?.token_id}</p>
