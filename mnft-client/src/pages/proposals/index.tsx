@@ -1,9 +1,10 @@
 import { useQuery, gql } from '@apollo/client';
 import {ProposalsList} from "@/components/proposals/proposals-list";
+import {useAccount} from "wagmi";
 
 const GET_PROPOSALS = gql`
     query GetProposals($owner: String!) {
-        proposals(where: {orderOwner: $owner}) {
+        proposals(where: {orderOwner: $owner, isClosed: false}) {
             id
             orderId
             nft
@@ -16,9 +17,9 @@ const GET_PROPOSALS = gql`
 `;
 
 export default function ProposalsPage() {
-
+    const { address } = useAccount();
     const { loading, error, data } = useQuery(GET_PROPOSALS, {
-        variables: { owner: '0x580828B108f9B42D13eB5d7A1E70bBd9076C632d' },
+        variables: { owner: address },
     });
     console.log('orders: ', data);
     console.log('error: ', error);
@@ -26,7 +27,6 @@ export default function ProposalsPage() {
     return (
         <main>
             proposals page
-
             {loading ? 'loading...' : <ProposalsList proposals={data.proposals} />}
         </main>
     );

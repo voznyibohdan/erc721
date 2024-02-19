@@ -1,7 +1,7 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {
-    Dialog, DialogClose,
+    Dialog,
     DialogContent,
     DialogDescription, DialogFooter,
     DialogHeader,
@@ -10,35 +10,62 @@ import {
 } from "@/components/ui/dialog";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {createOrder} from "@/services/contract";
 import {parseEther} from "viem";
+import {getNftMetadata} from "@/services";
+import {NFT} from "@/types";
+import {useWaitForTransaction} from "wagmi";
 
 type NftCard = {
-    id: string;
-    name: string;
+    nft: NFT
 }
 
-export function NftCard({ id, name }: NftCard) {
+export function NftCard({ nft }: NftCard) {
+    const tokenAddress = nft.token_address;
     const [price, setPrice] = useState(0.1);
+    const [hash, setHash] = useState('');
+    const [metadata, setMetadata] = useState<any>();
+
+    const {isLoading, isSuccess} = useWaitForTransaction({
+        // @ts-ignore
+        hash: hash,
+    });
+
+    console.log(`Transaction loading: ${isLoading}, is transaction success: ${isSuccess}`);
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         setPrice(parseFloat(event.target.value));
     }
 
     const handleCreateOrder = async () => {
-        console.log('NFT PRICE: ', price.toString());
-        await createOrder(parseInt(id), parseEther(price.toString()));
+        const convprice = parseEther(price.toString());
+        // @ts-ignore
+        const response = await createOrder(metadata?.token_id, parseInt(convprice.toString()));
+        setHash(response);
     }
+
+    const fetchMetadata = async (address: string) => {
+        return await getNftMetadata(address);
+    }
+
+    useEffect(() => {
+        if (tokenAddress) {
+            fetchMetadata(tokenAddress).then(response => {
+                console.log('metadata: ', response);
+                setMetadata(response);
+            });
+        }
+    }, [tokenAddress]);
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle>Name</CardTitle>
-                <CardDescription>{name}</CardDescription>
+                <CardDescription>{nft.name}</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>nft id: {id}</p>
+                <p>nft id: {metadata?.token_id}</p>
             </CardContent>
             <CardFooter>
                 <Dialog>
@@ -49,7 +76,7 @@ export function NftCard({ id, name }: NftCard) {
                         <DialogHeader>
                             <DialogTitle>Create order</DialogTitle>
                             <DialogDescription>
-                                Create order for nftt with id {id}
+                                Create order for nftt with id {metadata?.token_id}
                             </DialogDescription>
                         </DialogHeader>
                         <div className="flex items-center space-x-2">

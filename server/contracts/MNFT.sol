@@ -2,8 +2,9 @@
 pragma solidity ^0.8.20;
 
 import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract MNFT is ERC721 {
+contract MNFT is ERC721, ERC721URIStorage {
     uint256 public immutable MAX_SUPPLY = 10000;
     uint256 public totalSupply;
     uint256 public mintPrice = 0.1 ether;
@@ -56,6 +57,19 @@ contract MNFT is ERC721 {
     event OrderClosed(uint256 orderId, uint256 proposalId, uint256 time);
 
     constructor() ERC721("MyNFT", "MNFT") {
+    }
+
+    function setTokenURI(uint256 _tokenId, string memory _tokenURI) external {
+        require(ownerOf(_tokenId) == msg.sender, "not owner");
+        _setTokenURI(_tokenId, _tokenURI);
+    }
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721URIStorage) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
     }
 
     function mint() external payable {

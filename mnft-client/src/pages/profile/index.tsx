@@ -34,7 +34,7 @@ export default function ProfilePage() {
                 <Button onClick={handleMintNft}>Mint one nft</Button>
             </div>
             <div className="nftContainer">
-                {nfts.map((nft:NFT) => <NftCard id={nft.token_id} name={nft.name} key={nft.token_id} />)}
+                {nfts.map((nft:NFT) => <NftCard nft={nft} key={nft.token_id} />)}
             </div>
         </main>
     )

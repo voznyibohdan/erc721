@@ -17,6 +17,7 @@
     "@web3modal/wagmi": "^3.5.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dotenv": "^16.4.4",
     "graphql": "^16.8.1",
     "lucide-react": "^0.330.0",
     "moralis": "^2.24.2",

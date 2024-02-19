@@ -6,7 +6,7 @@ const inter = Inter({subsets: ["latin"]});
 
 const GET_ORDERS = gql`
     query GetOrders {
-        orders {
+        orders(where: {isClosed: false}) {
             id
             nft
             price

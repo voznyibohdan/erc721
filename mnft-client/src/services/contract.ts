@@ -16,13 +16,13 @@ export const mintNft = async () => {
     return hash;
 }
 
-export const createOrder = async (tokenId: number, price: bigint) => {
+export const createOrder = async (tokenId: string, price: number) => {
     const { request } = await prepareWriteContract({
         address: contractAddress,
         abi: abi,
         functionName: 'createOrder',
         // @ts-ignore
-        args: [tokenId, price],
+        args: [tokenId, parseInt(price)],
     });
 
     const { hash } = await writeContract(request);
