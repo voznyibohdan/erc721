@@ -1,0 +1,17 @@
+type Order @entity {
+  id: String!
+  nft: BigInt!
+  price: BigInt!
+  isClosed: Boolean!
+  owner: Bytes!
+}
+
+type Proposal @entity {
+  id: String!
+  orderId: BigInt!
+  nft: BigInt!
+  price: BigInt!
+  isClosed: Boolean!
+  author: Bytes!
+  orderOwner: Bytes!
+}
