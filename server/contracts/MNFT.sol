@@ -5,7 +5,7 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract MNFT is ERC721, ERC721URIStorage {
-    uint256 public immutable MAX_SUPPLY = 10000;
+    uint256 public constant MAX_SUPPLY = 10000;
     uint256 public totalSupply;
     uint256 public mintPrice = 0.1 ether;
 
@@ -124,7 +124,7 @@ contract MNFT is ERC721, ERC721URIStorage {
         address payable contractAddress = payable(address(this));
         contractAddress.transfer(msg.value);
 
-        withdrawAllowance[msg.sender] = msg.value;
+        withdrawAllowance[msg.sender] += msg.value;
 
         Order memory order = orders[_orderId];
 
@@ -155,7 +155,7 @@ contract MNFT is ERC721, ERC721URIStorage {
         return proposalId;
     }
 
-    function closeOrder(uint256 _orderId, uint256 _proposalId) external payable {
+    function closeOrder(uint256 _orderId, uint256 _proposalId) external {
         require(userOrders[_orderId] == msg.sender, "Not the order owner");
         Proposal memory proposal = proposals[_proposalId];
         require(proposal.orderId == _orderId, "Wrong proposal id");
@@ -165,8 +165,5 @@ contract MNFT is ERC721, ERC721URIStorage {
 
         _safeTransfer(msg.sender, proposal.author, proposal.nft);
         emit OrderClosed(_orderId, _proposalId, block.timestamp);
-    }
-
-    receive() external payable {
     }
 }
